@@ -82,4 +82,18 @@ if __name__ == '__main__':
                   validation_data=(x_val, y_val))
         return model
 
-    train_net()
+    model = train_net()
+    """
+    # evaluate the model
+    scores_train = model.evaluate(x_train, y_train, verbose=0)
+    scores_val = model.evaluate(x_val, y_val, verbose=0)
+    # print("Training %s: %.2f%%" % (model.metrics_names[1], scores_train[1]*100))
+    print("Validation %s: %.2f%%" % (model.metrics_names[1], scores_val[1]*100))
+    """
+    # serialize model to JSON
+    model_json = model.to_json()
+    with open("model.json", "w") as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5
+    model.save_weights(os.path.join("weights","unet_weights.hdf5"))
+    print("Saved model to disk")
