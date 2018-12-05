@@ -75,7 +75,7 @@ if __name__ == '__main__':
     model.load_weights(weights_path)
     test_id = 'test'
     img = normalize(tiff.imread('data/mband/{}.tif'.format(test_id)).transpose([1,2,0]))   # make channels last
-
+    logging.debug("test.shape: {}".format(img.shape))
     for i in range(7):
         if i == 0:  # reverse first dimension
             mymat = predict(img[::-1,:,:], model, patch_sz=PATCH_SZ, n_classes=N_CLASSES).transpose([2,0,1])
@@ -111,7 +111,7 @@ if __name__ == '__main__':
             #print(temp[0][0][0], temp[3][12][13])
             print("Case 7", temp.shape, mymat.shape)
             mymat = np.mean( np.array([ temp, mymat ]), axis=0 )
-
+    logging.debug("mymat.shape: {}".format(mymat.shape))
     #print(mymat[0][0][0], mymat[3][12][13])
     map = picture_from_mask(mymat, 0.5)
     #mask = predict(img, model, patch_sz=PATCH_SZ, n_classes=N_CLASSES).transpose([2,0,1])  # make channels first

@@ -83,6 +83,7 @@ if __name__ == '__main__':
         return model
 
     model = train_net()
+    logging.debug("Training done")
     """
     # evaluate the model
     scores_train = model.evaluate(x_train, y_train, verbose=0)
@@ -94,6 +95,7 @@ if __name__ == '__main__':
     model_json = model.to_json()
     with open("model.json", "w") as json_file:
         json_file.write(model_json)
+        logging.debug("Model JSON written")
     # serialize weights to HDF5
     model.save_weights(os.path.join("weights","unet_weights.hdf5"))
-    print("Saved model to disk")
+    logging.debug("Saved model to disk")
