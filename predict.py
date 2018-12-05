@@ -2,6 +2,8 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 import tifffile as tiff
+import logging
+logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
 
 from train_unet import weights_path, get_model, normalize, PATCH_SZ, N_CLASSES
 
@@ -35,6 +37,7 @@ def predict(x, model, patch_sz=160, n_classes=5):
     # predictions:
     patches_predict = model.predict(patches_array, batch_size=4)
     prediction = np.zeros(shape=(extended_height, extended_width, n_classes), dtype=np.float32)
+    logging.debug("X.shape: {}\next_x.shape: {}\npatches_predict: {}\nprediction: {}".format(x.shape,ext_x.shape,patches_predict.shape,prediction.shape))
     for k in range(patches_predict.shape[0]):
         i = k // npatches_horizontal
         j = k % npatches_vertical

@@ -1,5 +1,7 @@
 from unet_model import *
 from gen_patches import *
+import logging
+logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s- %(message)s')
 
 import os.path
 import numpy as np
@@ -49,7 +51,9 @@ if __name__ == '__main__':
     print('Reading images')
     for img_id in trainIds:
         img_m = normalize(tiff.imread('./data/mband/{}.tif'.format(img_id)).transpose([1, 2, 0]))
+        logging.debug('mband/{}.tif shape:{}'.format(img_id, img_m.shape))
         mask = tiff.imread('./data/gt_mband/{}.tif'.format(img_id)).transpose([1, 2, 0]) / 255
+        logging.debug('gt_mband/{}.tif shape:{}'.format(img_id, mask.shape))
         train_xsz = int(3/4 * img_m.shape[0])  # use 75% of image as train and 25% for validation
         X_DICT_TRAIN[img_id] = img_m[:train_xsz, :, :]
         Y_DICT_TRAIN[img_id] = mask[:train_xsz, :, :]
@@ -62,6 +66,7 @@ if __name__ == '__main__':
         print("start train net")
         x_train, y_train = get_patches(X_DICT_TRAIN, Y_DICT_TRAIN, n_patches=TRAIN_SZ, sz=PATCH_SZ)
         x_val, y_val = get_patches(X_DICT_VALIDATION, Y_DICT_VALIDATION, n_patches=VAL_SZ, sz=PATCH_SZ)
+        logging.debug("x_train: %s,y_train: %s,"%(str(x_train.shape), str(y_train.shape)))
         model = get_model()
         if os.path.isfile(weights_path):
             model.load_weights(weights_path)
